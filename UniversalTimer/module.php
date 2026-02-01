@@ -6,7 +6,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../libs/_traits.php';
 
 // Blink Home Device
-class UniversalTimer extends IPSModule
+class UniversalTimer extends IPSModuleStrict
 {
     // Helper Traits
     use DebugHelper;
@@ -14,15 +14,35 @@ class UniversalTimer extends IPSModule
     use ProfileHelper;
     use VariableHelper;
 
-    // some constants
+    /**
+     * @var string Active status color
+     */
     private const STATUS_ACTIVE = '#C0FFC0';
+    /**
+     * @var string Active status color
+     */
     private const STATUS_INACTIVE = '#FFC0C0';
-    // time
+
+    /**
+     * @var string No time constants
+     */
     private const TIME_NONE = '--:--:--';
+    /**
+     * @var string Time reset constants
+     */
     private const TIME_RESET = '{"hour": -1, "minute": -1, "second": -1 }';
-    // event
+
+    /**
+     * @var string Event constants
+     */
     private const EVENT_OFF = 'Off';
+    /**
+     * @var string Event separator constants
+     */
     private const EVENT_SEPERATOR = 'None';
+    /**
+     * @var array<string,string> Event values mapping
+     */
     private const EVENT_VALUES = [
         'AstronomicTwilightStart' => 'ATS',
         'NauticTwilightStart'     => 'NTS',
@@ -36,9 +56,12 @@ class UniversalTimer extends IPSModule
     ];
 
     /**
-     * Overrides the internal IPSModule::Create($id) function
+     * In contrast to Construct, this function is called only once when creating the instance and starting IP-Symcon.
+     * Therefore, status variables and module properties which the module requires permanently should be created here.
+     *
+     * @return void
      */
-    public function Create()
+    public function Create(): void
     {
         //Never delete this line!
         parent::Create();
@@ -55,24 +78,36 @@ class UniversalTimer extends IPSModule
     }
 
     /**
-     * Overrides the internal IPSModule::Destroy($id) function
+     * This function is called when deleting the instance during operation and when updating via "Module Control".
+     * The function is not called when exiting IP-Symcon.
+     *
+     * @return void
      */
-    public function Destroy()
+    public function Destroy(): void
     {
         //Never delete this line!
         parent::Destroy();
     }
 
     /**
-     * Configuration Form.
+     * The content can be overwritten in order to transfer a self-created configuration page.
+     * This way, content can be generated dynamically.
+     * In this case, the "form.json" on the file system is completely ignored.
      *
-     * @return JSON configuration string.
+     * @return string Content of the configuration page.
      */
-    public function GetConfigurationForm()
+    public function GetConfigurationForm(): string
     {
         // Get Form
         $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
 
+        // Extract Version
+        $ins = IPS_GetInstance($this->InstanceID);
+        $mod = IPS_GetModule($ins['ModuleInfo']['ModuleID']);
+        $lib = IPS_GetLibrary($mod['LibraryID']);
+        $form['actions'][0]['items'][2]['caption'] = sprintf('v%s.%d', $lib['Version'], $lib['Build']);
+
+        // Timetable List
         $value = $this->ReadPropertyString('Timetable');
         $list = json_decode($value, true);
         foreach ($list as &$line) {
@@ -80,28 +115,30 @@ class UniversalTimer extends IPSModule
             $line['editable'] = false;
             $line['rowColor'] = ($line['status'] == 1) ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
         }
-        $this->SendDebug(__FUNCTION__, json_encode($list));
-        $form['elements'][3]['items'][0]['values'] = $list;
+        $this->LogDebug(__FUNCTION__, json_encode($list));
+        $form['elements'][2]['items'][0]['values'] = $list;
         // Reset time fields
-        $form['elements'][3]['items'][8]['items'][1]['value'] = self::TIME_RESET;
-        $form['elements'][3]['items'][10]['items'][1]['value'] = self::TIME_RESET;
-        $form['elements'][3]['items'][10]['items'][4]['value'] = self::TIME_RESET;
+        $form['elements'][2]['items'][8]['items'][1]['value'] = self::TIME_RESET;
+        $form['elements'][2]['items'][10]['items'][1]['value'] = self::TIME_RESET;
+        $form['elements'][2]['items'][10]['items'][4]['value'] = self::TIME_RESET;
 
         // Debug output
-        $this->SendDebug(__FUNCTION__, $form);
+        $this->LogDebug(__FUNCTION__, $form);
         return json_encode($form);
     }
 
     /**
-     * Overrides the internal IPSModule::ApplyChanges($id) function
+     * Is executed when "Apply" is pressed on the configuration page and immediately after the instance has been created.
+     *
+     * @return void
      */
-    public function ApplyChanges()
+    public function ApplyChanges(): void
     {
         //Never delete this line!
         parent::ApplyChanges();
 
         $list = $this->ReadPropertyString('Timetable');
-        $this->SendDebug(__FUNCTION__, $list);
+        $this->LogDebug(__FUNCTION__, $list);
 
         // Aditionally Switch
         $switch = $this->ReadPropertyBoolean('SettingsSwitch');
@@ -112,15 +149,16 @@ class UniversalTimer extends IPSModule
     }
 
     /**
-     * RequestAction.
+     * Is called when, for example, a button is clicked in the visualization.
      *
-     *  @param string $ident Ident.
-     *  @param string $value Value.
+     * @param string $ident Ident of the variable
+     * @param mixed $value The value to be set
+     * @return void
      */
-    public function RequestAction($ident, $value)
+    public function RequestAction(string $ident, mixed $value): void
     {
         // Debug output
-        $this->SendDebug(__FUNCTION__, $ident . ' => ' . $value);
+        $this->LogDebug(__FUNCTION__, $ident . ' => ' . $value);
         switch ($ident) {
             case 'OnAdd':
                 $this->OnAddList($value);
@@ -154,7 +192,13 @@ class UniversalTimer extends IPSModule
         //return true;
     }
 
-    private function OnAddList(string $value)
+    /**
+     * Called from configuration form if an entry is added to the timetable list.
+     *
+     * @param string $value json encoded list.
+     * @return void
+     */
+    private function OnAddList(string $value): void
     {
         $list = json_decode($value, true);
         // fix inner list as array
@@ -187,10 +231,11 @@ class UniversalTimer extends IPSModule
      * Duplicate a entry of the timetable list.
      *
      * @param string $value json encoded list plus index.
+     * @return void
      */
-    private function OnCopyList(string $value)
+    private function OnCopyList(string $value): void
     {
-        $this->SendDebug(__FUNCTION__, $value);
+        $this->LogDebug(__FUNCTION__, $value);
         $list = json_decode($value, true);
 
         // how many lines in the list?
@@ -207,7 +252,7 @@ class UniversalTimer extends IPSModule
         // sort
         $id = 1;
         foreach ($list as &$line) {
-            $this->SendDebug(__FUNCTION__, $line['id'] . ' => ' . $id);
+            $this->LogDebug(__FUNCTION__, $line['id'] . ' => ' . $id);
             // only if nesseccary
             if ($line['id'] != $id) {
                 $line['id'] = $id;
@@ -224,9 +269,10 @@ class UniversalTimer extends IPSModule
     /**
      * User has select an new event trigger.
      *
-     * @param string $id select ID.
+     * @param string $value event.
+     * @return void
      */
-    private function OnCheckEvent(string $value)
+    private function OnCheckEvent(string $value): void
     {
         if ($value == self::EVENT_SEPERATOR) {
             $this->UpdateFormField('SelectedEvent', 'value', self::EVENT_OFF);
@@ -237,10 +283,11 @@ class UniversalTimer extends IPSModule
      * Reset selected timevalue.
      *
      * @param string $value name of the form field.
+     * @return void
      */
-    private function OnResetTime(string $value)
+    private function OnResetTime(string $value): void
     {
-        $this->SendDebug(__FUNCTION__, $value);
+        $this->LogDebug(__FUNCTION__, $value);
         $this->UpdateFormField($value, 'value', self::TIME_RESET);
     }
 
@@ -248,16 +295,17 @@ class UniversalTimer extends IPSModule
      * Re-sort the timetable list.
      *
      * @param string $value json encoded list.
+     * @return void
      */
-    private function OnSortList(string $value)
+    private function OnSortList(string $value): void
     {
-        $this->SendDebug(__FUNCTION__, $value);
+        $this->LogDebug(__FUNCTION__, $value);
         $list = json_decode($value, true);
 
         $sort = false;
         $id = 1;
         foreach ($list as &$line) {
-            $this->SendDebug(__FUNCTION__, $line['id'] . ' => ' . $id);
+            $this->LogDebug(__FUNCTION__, $line['id'] . ' => ' . $id);
             // only if nesseccary
             if ($line['id'] != $id) {
                 $line['id'] = $id;
@@ -278,10 +326,11 @@ class UniversalTimer extends IPSModule
      * Select an list entry.
      *
      * @param string $value json encoded list.
+     * @return void
      */
-    private function OnSelectList(string $value)
+    private function OnSelectList(string $value): void
     {
-        $this->SendDebug(__FUNCTION__, $value);
+        $this->LogDebug(__FUNCTION__, $value);
         $list = json_decode($value, true);
 
         // how many lines in the list?
@@ -297,7 +346,7 @@ class UniversalTimer extends IPSModule
                 break;
             }
         }
-        $this->SendDebug(__FUNCTION__, $select);
+        $this->LogDebug(__FUNCTION__, $select);
         // copy values to fields
         $this->UpdateFormField('SelectedNumber', 'value', $id);
         //'SelectedStatus'
@@ -340,10 +389,11 @@ class UniversalTimer extends IPSModule
      * Update selected list entry.
      *
      * @param string $value json encoded list.
+     * @return void
      */
-    private function OnUpdateList(string $value)
+    private function OnUpdateList(string $value): void
     {
-        $this->SendDebug(__FUNCTION__, $value);
+        $this->LogDebug(__FUNCTION__, $value);
         $list = json_decode($value, true);
 
         // how many lines in the list?
@@ -432,20 +482,21 @@ class UniversalTimer extends IPSModule
     /**
      * Switch Variable/Script
      *
-     *  @param boolean $state ON/OFF.
+     * @param boolean $state ON/OFF.
+     * @return boolean True if successful, false otherwise
      */
-    private function SwitchDevice($state)
+    private function SwitchDevice($state): bool
     {
         $ret = true;
-        $this->SendDebug(__FUNCTION__, 'New State: ' . var_export($state, true));
+        $this->LogDebug(__FUNCTION__, 'New State: ' . var_export($state, true));
         // Check Script
         $ds = $this->ReadPropertyInteger('DeviceScript');
         if ($ds != 0) {
             if (IPS_ScriptExists($ds)) {
                 $rs = IPS_RunScriptEx($ds, ['State' => $state]);
-                $this->SendDebug(__FUNCTION__, 'RundScript: ' . $rs);
+                $this->LogDebug(__FUNCTION__, 'RundScript: ' . $rs);
             } else {
-                $this->SendDebug(__FUNCTION__, 'Script #' . $ds . ' doesnt exist!');
+                $this->LogDebug(__FUNCTION__, 'Script #' . $ds . ' doesnt exist!');
             }
         }
         // Check Variables
@@ -454,7 +505,7 @@ class UniversalTimer extends IPSModule
         foreach ($variables as $variable) {
             $ret = @RequestAction($variable['VariableID'], boolval($state));
             if ($ret === false) {
-                $this->SendDebug(__FUNCTION__, 'Device #' . $variable['VariableID'] . ' could not be switched by RequestAction!');
+                $this->LogDebug(__FUNCTION__, 'Device #' . $variable['VariableID'] . ' could not be switched by RequestAction!');
                 $ret = false;
             }
         }

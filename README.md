@@ -1,10 +1,10 @@
 # Universelle Zeitschaltuhr (Universal Timer)
 
 [![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg?style=flat-square)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Product](https://img.shields.io/badge/Symcon%20Version-6.4-blue.svg?style=flat-square)](https://www.symcon.de/produkt/)
-[![Version](https://img.shields.io/badge/Modul%20Version-1.0.20220228-orange.svg?style=flat-square)](https://github.com/Wilkware/UniversalTimer)
+[![Product](https://img.shields.io/badge/Symcon%20Version-8.1-blue.svg?style=flat-square)](https://www.symcon.de/produkt/)
+[![Version](https://img.shields.io/badge/Modul%20Version-2.0.20220228-orange.svg?style=flat-square)](https://github.com/Wilkware/UniversalTimer)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-[![Actions](https://img.shields.io/github/actions/workflow/status/wilkware/UniversalTimer/style.yml?branch=main&label=CheckStyle&style=flat-square)](https://github.com/Wilkware/UniversalTimer/actions)
+[![Actions](https://img.shields.io/github/actions/workflow/status/wilkware/UniversalTimer/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/Wilkware/UniversalTimer/actions)
 
 Dieses Modul ermöglicht gezielte Schaltvorgänge zu bestimmten Uhrzeiten oder in Abhängigkeit von Ereignissen.
 
@@ -85,7 +85,7 @@ Im Panel "Erweiterte Einstellungen ..." kann man eine Variable vom Typ Boolean a
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 6.4
+* IP-Symcon ab Version 8.1
 
 ### 3. Installation
 
@@ -166,6 +166,15 @@ Man kann die Statusvariable (Schalter) direkt in der Visualisierung verlinken.
 Ein direkter Aufruf von öffentlichen Funktionen ist nicht notwendig!
 
 ### 8. Versionshistorie
+
+v2.0.20260201
+
+* _NEU_: Projektumstrukturierung hin zu einer globalen CI/CD-Pipeline
+* _NEU_: Kompatibilität auf IPS 8.1 hoch gesetzt
+* _NEU_: Umstellung auf IPSModuleStrict
+* _NEU_: Kompatibilität für IPS 8.2 vorbereitet
+* _NEU_: Modulversion wird in Quellcodesektion angezeigt
+* _FIX_: Bibliotheksfunktionen angeglichen
 
 v1.0.20220228
 
