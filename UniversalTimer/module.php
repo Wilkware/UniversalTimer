@@ -2,47 +2,50 @@
 
 declare(strict_types=1);
 
-// Generell funktions
+/** Generell funktions */
 require_once __DIR__ . '/../libs/_traits.php';
 
-// Blink Home Device
+/** Namespaced traits */
+use Wilkware\UniversalTimer\DebugHelper;
+use Wilkware\UniversalTimer\EventHelper;
+use Wilkware\UniversalTimer\VariableHelper;
+
+/**
+ * CLASS Universal Timer
+ */
 class UniversalTimer extends IPSModuleStrict
 {
-    // Helper Traits
+    // -------------------------------------------------------------------------
+    // Traits
+    // -------------------------------------------------------------------------
+
     use DebugHelper;
     use EventHelper;
-    use ProfileHelper;
     use VariableHelper;
 
-    /**
-     * @var string Active status color
-     */
+    // -------------------------------------------------------------------------
+    // Constants
+    // -------------------------------------------------------------------------
+
+    /** @var string Active status color */
     private const STATUS_ACTIVE = '#C0FFC0';
-    /**
-     * @var string Active status color
-     */
+    
+    /** @var string Active status color */
     private const STATUS_INACTIVE = '#FFC0C0';
 
-    /**
-     * @var string No time constants
-     */
+    /** @var string No time constants */
     private const TIME_NONE = '--:--:--';
-    /**
-     * @var string Time reset constants
-     */
+
+    /** @var string Time reset constants */
     private const TIME_RESET = '{"hour": -1, "minute": -1, "second": -1 }';
 
-    /**
-     * @var string Event constants
-     */
+    /** @var string Event constants */
     private const EVENT_OFF = 'Off';
-    /**
-     * @var string Event separator constants
-     */
+
+    /** @var string Event separator constants */
     private const EVENT_SEPERATOR = 'None';
-    /**
-     * @var array<string,string> Event values mapping
-     */
+
+    /** @var array<string,string> Event values mapping */
     private const EVENT_VALUES = [
         'AstronomicTwilightStart' => 'ATS',
         'NauticTwilightStart'     => 'NTS',
@@ -54,6 +57,10 @@ class UniversalTimer extends IPSModuleStrict
         'AstronomicTwilightEnd'   => 'ATE',
         'ExternalTrigger'         => 'ET',
     ];
+
+    // -------------------------------------------------------------------------
+    // Methods
+    // -------------------------------------------------------------------------
 
     /**
      * In contrast to Construct, this function is called only once when creating the instance and starting IP-Symcon.
