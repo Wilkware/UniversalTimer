@@ -72,13 +72,17 @@ class UniversalTimer extends IPSModuleStrict
     {
         //Never delete this line!
         parent::Create();
+
         // Instance
         $this->RegisterPropertyBoolean('InstanceActive', true);
+
         // Time control
         $this->RegisterPropertyString('Timetable', '[]');
+
         // Device
         $this->RegisterPropertyString('DeviceVariables', '[]');
         $this->RegisterPropertyInteger('DeviceScript', 0);
+
         // Settings
         $this->RegisterPropertyInteger('SettingsTrigger', 0);
         $this->RegisterPropertyBoolean('SettingsSwitch', false);
