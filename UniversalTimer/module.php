@@ -29,7 +29,7 @@ class UniversalTimer extends IPSModuleStrict
 
     /** @var string Active status color */
     private const STATUS_ACTIVE = '#C0FFC0';
-    
+
     /** @var string Active status color */
     private const STATUS_INACTIVE = '#FFC0C0';
 
