@@ -13,11 +13,12 @@ Dieses Modul ermöglicht gezielte Schaltvorgänge zu bestimmten Uhrzeiten oder i
 1. [Funktionsumfang](#user-content-1-funktionsumfang)
 2. [Voraussetzungen](#user-content-2-voraussetzungen)
 3. [Installation](#user-content-3-installation)
-4. [Einrichten der Instanzen in IP-Symcon](#user-content-4-einrichten-der-instanzen-in-ip-symcon)
-5. [Statusvariablen und Profile](#user-content-5-statusvariablen-und-profile)
-6. [Visualisierung](#user-content-6-visualisierung)
-7. [PHP-Befehlsreferenz](#user-content-7-php-befehlsreferenz)
-8. [Versionshistorie](#user-content-8-versionshistorie)
+4. [Einrichtung](#user-content-4-einrichtung)
+5. [Statusvariablen](#user-content-5-statusvariablen)
+6. [Darstellungen](#user-content-6-darstellungen)
+7. [Visualisierung](#user-content-7-visualisierung)
+8. [Befehlsreferenz](#user-content-8-befehlsreferenz)
+9. [Versionshistorie](#user-content-9-versionshistorie)
 
 ### 1. Funktionsumfang
 
@@ -85,29 +86,29 @@ Im Panel "Erweiterte Einstellungen ..." kann man eine Variable vom Typ Boolean a
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 8.1
+* Symcon ab Version 8.1
 
 ### 3. Installation
 
-* Über den Modul Store das Modul _Universal Timer_ installieren.
-* Alternativ Über das Modul-Control folgende URL hinzufügen.  
+* Über den Modul Store das Modul _Universelle Zeitschaltuhr_ installieren.
+* Alternativ über das Modul Control folgende URL hinzufügen.  
 `https://github.com/Wilkware/UniversalTimer` oder `git://github.com/Wilkware/UniversalTimer.git`
 
-### 4. Einrichten der Instanzen in IP-Symcon
+### 4. Einrichtung
 
-* Unter "Instanz hinzufügen" ist das 'Universal Timer'-Modul (Alias: Universelle Zeitschaltuhr) unter dem Hersteller '(Geräte)' aufgeführt.
+* Unter 'Instanz hinzufügen' ist das _Universelle Zeitschaltuhr_-Modul unter dem Hersteller '(Geräte)' aufgeführt.
 
 __Konfigurationsseite__:
 
 Einstellungsbereich:
 
-> Schaltung ...
+> 🎛️ Schaltung ...
 
 Name                  | Beschreibung
 --------------------- | ---------------------------------
 An /Aus               | Schalter zum Aktivieren bzw. Deaktivieren der gesamten Schaltuhr
 
-> Zeitssteuerung ...
+> ⏱️ Zeitsteuerung ...
 
 Name                  | Beschreibung
 --------------------- | ---------------------------------
@@ -135,37 +136,43 @@ Spätestens            | Spätester Zeitpunkt zum Schalten (in Bezug zum ausgew�
 --- Bedingung ---
 HINZUFÜGEN            | Fügt eine Bedingung hinzu, welche zum Zeitpunkt des Schaltes erfüllt sein muss.
 
-> Geräte ...
+> 💡 Geräte ...
 
 Name                  | Beschreibung
 --------------------- | ---------------------------------
 Schaltvariablen       | Liste von Geräten (mehrere Geräte)
 Skript                | Auszuführendes Skript (Status true/false wird als Array 'State' übergeben)
 
-> Einstellungen ...
+> ⚙️ Erweiterte Einstellungen ...
 
 Name                  | Beschreibung
 --------------------- | ---------------------------------
 Externer Auslöser     | Variable vom Typ Boolean, welcher als Auslöser bei bedingtem Schalten benutzt werden soll.
 Gleichzeitiges Ausführen eines Scriptes | Auswahl eines Skriptes, welches zusätzlich ausgeführt werden soll (IPS_ExecScript).
 
-### 5. Statusvariablen und Profile
+### 5. Statusvariablen
 
-Die Statusvariablen werden unter Berücksichtigung der erweiterten Einstellungen angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
+Die Statusvariablen werden automatisch angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
 
-Name                 | Typ          | Beschreibung
--------------------- | ------------ | ----------------
-Schalter             | Boolean      | Variable zum manuellen Auslösen der Geräteschaltung (Ein/Aus).
+Name                 | Typ     | Beschreibung
+-------------------- | ------- | ------------------------------
+Schalter             | Boolean | Variable zum manuellen Auslösen der Geräteschaltung
 
-### 6. Visualisierung
+_Hinweis:_ Die Variable _Schalter_ wird nur unter Berücksichtigung der erweiterten Einstellungen ('Zusätzlich noch eine normale Schaltervariable anlegen') angelegt.
+
+### 6. Darstellungen
+
+Es werden keine Darstellungen oder Profile benötigt.
+
+### 7. Visualisierung
 
 Man kann die Statusvariable (Schalter) direkt in der Visualisierung verlinken.
 
-### 7. PHP-Befehlsreferenz
+### 8. Befehlsreferenz
 
 Ein direkter Aufruf von öffentlichen Funktionen ist nicht notwendig!
 
-### 8. Versionshistorie
+### 9. Versionshistorie
 
 v2.0.20260201
 
@@ -182,7 +189,7 @@ v1.0.20220228
 
 ## Entwickler
 
-Seit nunmehr über 10 Jahren fasziniert mich das Thema Haussteuerung. In den letzten Jahren betätige ich mich auch intensiv in der IP-Symcon Community und steuere dort verschiedenste Skript und Module bei. Ihr findet mich dort unter dem Namen @pitti ;-)
+Seit nunmehr über 10 Jahren fasziniert mich das Thema Haussteuerung. In den letzten Jahren betätige ich mich auch intensiv in der Symcon Community und steuere dort verschiedenste Skript und Module bei. Ihr findet mich dort unter dem Namen @pitti ;-)
 
 [![GitHub](https://img.shields.io/badge/GitHub-@wilkware-181717.svg?style=for-the-badge&logo=github)](https://wilkware.github.io/)
 
