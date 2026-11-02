@@ -28,7 +28,7 @@
         },
         {
             "type": "ExpansionPanel",
-            "caption": "🎛️ Circuit ...",
+            "caption": "🎚️ Circuit ...",
             "items": [
                 {
                     "type": "Label",
@@ -58,58 +58,173 @@
                     "type": "List",
                     "name": "Timetable",
                     "caption": "Time table:",
-                    "rowCount": 6,
-                    "add": false,
+                    "add": true,
                     "delete": true,
                     "changeOrder": true,
-                    "loadValuesFromConfiguration": false,
-                    "onDelete": [
-                        "$list= [];",
-                        "foreach ($Timetable as $line) { $list[] = $line;};",
-                        "IPS_RequestAction($id,'OnDelete', json_encode($list));"
+                    "rowCount": 8,
+                    "form": "return json_decode(UTSC_GetScheduleForm($id), true);",
+                    "onAdd": [
+                        "$rows = [];",
+                        "foreach ($Timetable as $row) {",
+                        "    $rows[] = $row;",
+                        "}",
+                        "IPS_RequestAction($id, 'ListChanged', json_encode($rows));"
+                    ],
+                    "onEdit": [
+                        "$rows = [];",
+                        "foreach ($Timetable as $row) {",
+                        "    $rows[] = $row;",
+                        "}",
+                        "IPS_RequestAction($id, 'ListChanged', json_encode($rows));"
                     ],
                     "columns": [
                         {
-                            "caption": " ",
-                            "align": "center",
-                            "name": "_",
-                            "width": "30px",
-                            "onClick": [
-                                "if (!isset($Timetable['id'])) { return; };",
-                                "$list= [];",
-                                "foreach ($Timetable as $line) { $list[] = $line;};",
-                                "$list[] = $Timetable['id'];",
-                                "IPS_RequestAction($id,'OnSelect', json_encode($list));"
-                            ]
+                            "name": "active",
+                            "caption": "Active",
+                            "width": "70px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
                         },
                         {
-                            "caption": "#",
-                            "name": "id",
+                            "name": "name",
+                            "caption": "Name",
+                            "width": "auto",
+                            "add": "",
+                            "edit": {
+                                "type": "ValidationTextBox"
+                            }
+                        },
+                        {
+                            "name": "monday",
+                            "caption": "MO",
+                            "width": "50px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
+                        },
+                        {
+                            "name": "tuesday",
+                            "caption": "TU",
+                            "width": "50px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
+                        },
+                        {
+                            "name": "wednesday",
+                            "caption": "WE",
+                            "width": "50px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
+                        },
+                        {
+                            "name": "thursday",
+                            "caption": "TH",
+                            "width": "50px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
+                        },
+                        {
+                            "name": "friday",
+                            "caption": "FR",
+                            "width": "50px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
+                        },
+                        {
+                            "name": "saturday",
+                            "caption": "SA",
+                            "width": "50px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
+                        },
+                        {
+                            "name": "sunday",
+                            "caption": "SU",
+                            "width": "50px",
+                            "add": true,
+                            "edit": {
+                                "type": "CheckBox"
+                            }
+                        },
+                        {
+                            "name": "trigger",
+                            "caption": "Trigger",
+                            "width": "220px",
+                            "add": "Time",
                             "save": true,
-                            "width": "40px"
-                        },
-                        {
-                            "caption": "Status",
-                            "name": "status",
-                            "width": "75px",
                             "edit": {
                                 "type": "Select",
                                 "options": [
                                     {
-                                        "caption": "Active",
-                                        "value": 1
+                                        "caption": "Time",
+                                        "value": "Time"
                                     },
                                     {
-                                        "caption": "Inactive",
-                                        "value": 2
+                                        "caption": "Astronomic twilight start",
+                                        "value": "AstronomicTwilightStart"
+                                    },
+                                    {
+                                        "caption": "Nautic twilight start",
+                                        "value": "NauticTwilightStart"
+                                    },
+                                    {
+                                        "caption": "Civil twilight start",
+                                        "value": "CivilTwilightStart"
+                                    },
+                                    {
+                                        "caption": "Sunrise",
+                                        "value": "Sunrise"
+                                    },
+                                    {
+                                        "caption": "Sunset",
+                                        "value": "Sunset"
+                                    },
+                                    {
+                                        "caption": "Civil twilight end",
+                                        "value": "CivilTwilightEnd"
+                                    },
+                                    {
+                                        "caption": "Nautic twilight end",
+                                        "value": "NauticTwilightEnd"
+                                    },
+                                    {
+                                        "caption": "Astronomic twilight end",
+                                        "value": "AstronomicTwilightEnd"
+                                    },
+                                    {
+                                        "caption": "Trigger variable",
+                                        "value": "Variable"
                                     }
                                 ]
                             }
                         },
                         {
+                            "name": "time",
+                            "caption": "Time",
+                            "width": "100px",
+                            "add": "{\"hour\":0,\"minute\":0,\"second\":0}",
+                            "edit": {
+                                "type": "SelectTime"
+                            }
+                        },
+                        {
+                            "name": "calendar",
                             "caption": "Rule",
-                            "name": "rule",
-                            "width": "75px",
+                            "width": "230px",
+                            "add": 0,
                             "edit": {
                                 "type": "Select",
                                 "options": [
@@ -118,521 +233,541 @@
                                         "value": 0
                                     },
                                     {
-                                        "caption": "Ho",
+                                        "caption": "On holidays",
                                         "value": 1
                                     },
                                     {
-                                        "caption": "Va",
+                                        "caption": "On vacations",
                                         "value": 2
                                     },
                                     {
-                                        "caption": "Ho|Va",
+                                        "caption": "On holidays or vacations",
                                         "value": 3
                                     },
                                     {
-                                        "caption": "!Ho",
+                                        "caption": "Not on holidays",
                                         "value": 4
                                     },
                                     {
-                                        "caption": "!Va",
+                                        "caption": "Not on vacations",
                                         "value": 5
                                     },
                                     {
-                                        "caption": "!Ho|Va",
+                                        "caption": "Not on holidays or vacations",
                                         "value": 6
                                     }
                                 ]
                             }
                         },
                         {
-                            "caption": "Action",
                             "name": "action",
-                            "width": "50px",
+                            "caption": "Action",
+                            "width": "160px",
+                            "add": 0,
                             "edit": {
                                 "type": "Select",
                                 "options": [
                                     {
-                                        "caption": "ON",
-                                        "value": true
+                                        "caption": "Switch on",
+                                        "value": 0
                                     },
                                     {
-                                        "caption": "OFF",
-                                        "value": false
+                                        "caption": "Switch off",
+                                        "value": 1
+                                    },
+                                    {
+                                        "caption": "Individual action",
+                                        "value": 2
                                     }
                                 ]
                             }
-                        },
-                        {
-                            "caption": "MO",
-                            "name": "monday",
-                            "width": "50px",
-                            "add": true,
-                            "edit": {
-                                "type": "CheckBox"
-                            }
-                        },
-                        {
-                            "caption": "TU",
-                            "name": "tuesday",
-                            "width": "50px",
-                            "add": true,
-                            "edit": {
-                                "type": "CheckBox"
-                            }
-                        },
-                        {
-                            "caption": "WE",
-                            "name": "wednesday",
-                            "width": "50px",
-                            "add": true,
-                            "edit": {
-                                "type": "CheckBox"
-                            }
-                        },
-                        {
-                            "caption": "TH",
-                            "name": "thursday",
-                            "width": "50px",
-                            "add": true,
-                            "edit": {
-                                "type": "CheckBox"
-                            }
-                        },
-                        {
-                            "caption": "FR",
-                            "name": "friday",
-                            "width": "50px",
-                            "add": true,
-                            "edit": {
-                                "type": "CheckBox"
-                            }
-                        },
-                        {
-                            "caption": "SA",
-                            "name": "saturday",
-                            "width": "50px",
-                            "add": true,
-                            "edit": {
-                                "type": "CheckBox"
-                            }
-                        },
-                        {
-                            "caption": "SU",
-                            "name": "sunday",
-                            "width": "50px",
-                            "add": true,
-                            "edit": {
-                                "type": "CheckBox"
-                            }
-                        },
-                        {
-                            "caption": "Time",
-                            "name": "time",
-                            "save": true,
-                            "width": "75px"
-                        },
-                        {
-                            "caption": "Schedule",
-                            "name": "schedule",
-                            "visible": false,
-                            "edit": {
-                                "type": "List",
-                                "caption": "Advanced Schedule",
-                                "rowCount": 1,
-                                "add": false,
-                                "delete": false,
-                                "columns": [
+                        }
+                    ]
+                },
+                {
+                    "type": "PopupButton",
+                    "name": "Wizard",
+                    "caption": "Assistant",
+                    "popup": {
+                        "caption": "New schedule",
+                        "width": "700px",
+                        "pages": [
+                            {
+                                "name": "start",
+                                "caption": "Template and name",
+                                "items": [
                                     {
-                                        "caption": "Earliest",
-                                        "name": "eraliest",
-                                        "width": "auto"
+                                        "type": "Label",
+                                        "caption": "The assistant guides you step by step through the creation of a new schedule. A template prefills all settings, which can still be adjusted afterwards.",
+                                        "italic": true
                                     },
                                     {
-                                        "caption": "Event",
-                                        "name": "event",
-                                        "width": "auto"
+                                        "type": "Select",
+                                        "name": "WizardTemplate",
+                                        "caption": "Template",
+                                        "value": 0,
+                                        "width": "400px",
+                                        "onChange": "IPS_RequestAction($id, 'WizardTemplate', $WizardTemplate);",
+                                        "options": [
+                                            {
+                                                "caption": "None",
+                                                "value": 0
+                                            },
+                                            {
+                                                "caption": "Light on at dusk",
+                                                "value": 1
+                                            },
+                                            {
+                                                "caption": "Light off at a fixed time",
+                                                "value": 2
+                                            },
+                                            {
+                                                "caption": "Shutters up on workdays",
+                                                "value": 3
+                                            },
+                                            {
+                                                "caption": "Presence simulation in the evening",
+                                                "value": 4
+                                            }
+                                        ]
                                     },
                                     {
-                                        "caption": "Offset",
-                                        "name": "offset",
-                                        "width": "auto"
+                                        "type": "ValidationTextBox",
+                                        "name": "WizardName",
+                                        "caption": "Name",
+                                        "value": "",
+                                        "width": "400px"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "when",
+                                "caption": "Trigger",
+                                "items": [
+                                    {
+                                        "type": "Label",
+                                        "caption": "When should be switched? At a fixed time, relative to a sun event or when a variable changes to TRUE.",
+                                        "italic": true
                                     },
                                     {
-                                        "caption": "Latest",
-                                        "name": "latest",
-                                        "width": "auto"
+                                        "type": "RadioButtonGroup",
+                                        "name": "WizardTriggerType",
+                                        "value": "Time",
+                                        "width": "100%",
+                                        "options": [
+                                            {
+                                                "caption": "Fixed time",
+                                                "value": "Time",
+                                                "items": [
+                                                    {
+                                                        "type": "SelectTime",
+                                                        "name": "WizardTime",
+                                                        "caption": "Time",
+                                                        "value": "{\"hour\":0,\"minute\":0,\"second\":0}"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "caption": "Sun event",
+                                                "value": "Sun",
+                                                "items": [
+                                                    {
+                                                        "type": "RowLayout",
+                                                        "items": [
+                                                            {
+                                                                "type": "Select",
+                                                                "name": "WizardSunEvent",
+                                                                "caption": "Event",
+                                                                "value": "Sunset",
+                                                                "width": "300px",
+                                                                "options": [
+                                                                    {
+                                                                        "caption": "Astronomic twilight start",
+                                                                        "value": "AstronomicTwilightStart"
+                                                                    },
+                                                                    {
+                                                                        "caption": "Nautic twilight start",
+                                                                        "value": "NauticTwilightStart"
+                                                                    },
+                                                                    {
+                                                                        "caption": "Civil twilight start",
+                                                                        "value": "CivilTwilightStart"
+                                                                    },
+                                                                    {
+                                                                        "caption": "Sunrise",
+                                                                        "value": "Sunrise"
+                                                                    },
+                                                                    {
+                                                                        "caption": "Sunset",
+                                                                        "value": "Sunset"
+                                                                    },
+                                                                    {
+                                                                        "caption": "Civil twilight end",
+                                                                        "value": "CivilTwilightEnd"
+                                                                    },
+                                                                    {
+                                                                        "caption": "Nautic twilight end",
+                                                                        "value": "NauticTwilightEnd"
+                                                                    },
+                                                                    {
+                                                                        "caption": "Astronomic twilight end",
+                                                                        "value": "AstronomicTwilightEnd"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "NumberSpinner",
+                                                                "name": "WizardOffset",
+                                                                "caption": "Offset (minutes)",
+                                                                "value": 0,
+                                                                "minimum": -720,
+                                                                "maximum": 720,
+                                                                "suffix": " min"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "RowLayout",
+                                                        "items": [
+                                                            {
+                                                                "type": "SelectTime",
+                                                                "name": "WizardSunEarliest",
+                                                                "caption": "Earliest",
+                                                                "value": "{\"hour\":0,\"minute\":0,\"second\":0}"
+                                                            },
+                                                            {
+                                                                "type": "SelectTime",
+                                                                "name": "WizardSunLatest",
+                                                                "caption": "Latest",
+                                                                "value": "{\"hour\":23,\"minute\":59,\"second\":59}"
+                                                            },
+                                                            {
+                                                                "type": "CheckBox",
+                                                                "name": "WizardSunSkip",
+                                                                "caption": "Do not switch outside",
+                                                                "value": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "Label",
+                                                        "caption": "The switching time follows the sun event plus offset, but never before the earliest or after the latest time (00:00 and 23:59 = no limit). Outside the limits it is shifted to the limit or, if selected, not switched on this day.",
+                                                        "italic": true
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "caption": "Trigger variable",
+                                                "value": "Variable",
+                                                "items": [
+                                                    {
+                                                        "type": "SelectVariable",
+                                                        "name": "WizardVariable",
+                                                        "caption": "Trigger variable",
+                                                        "value": 0,
+                                                        "validVariableTypes": [
+                                                            0
+                                                        ],
+                                                        "width": "400px"
+                                                    },
+                                                    {
+                                                        "type": "RowLayout",
+                                                        "items": [
+                                                            {
+                                                                "type": "SelectTime",
+                                                                "name": "WizardVarEarliest",
+                                                                "caption": "Earliest",
+                                                                "value": "{\"hour\":0,\"minute\":0,\"second\":0}"
+                                                            },
+                                                            {
+                                                                "type": "SelectTime",
+                                                                "name": "WizardVarLatest",
+                                                                "caption": "Latest",
+                                                                "value": "{\"hour\":23,\"minute\":59,\"second\":59}"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "Label",
+                                                        "caption": "Switching takes place when the variable changes to TRUE within the time window.",
+                                                        "italic": true
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "NumberSpinner",
+                                        "name": "WizardRandom",
+                                        "caption": "Random deviation (± minutes, not for trigger variable)",
+                                        "value": 0,
+                                        "minimum": 0,
+                                        "maximum": 120,
+                                        "suffix": " min"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "days",
+                                "caption": "Days",
+                                "items": [
+                                    {
+                                        "type": "RowLayout",
+                                        "items": [
+                                            {
+                                                "type": "CheckBox",
+                                                "name": "WizardMonday",
+                                                "caption": "MO",
+                                                "value": true
+                                            },
+                                            {
+                                                "type": "CheckBox",
+                                                "name": "WizardTuesday",
+                                                "caption": "TU",
+                                                "value": true
+                                            },
+                                            {
+                                                "type": "CheckBox",
+                                                "name": "WizardWednesday",
+                                                "caption": "WE",
+                                                "value": true
+                                            },
+                                            {
+                                                "type": "CheckBox",
+                                                "name": "WizardThursday",
+                                                "caption": "TH",
+                                                "value": true
+                                            },
+                                            {
+                                                "type": "CheckBox",
+                                                "name": "WizardFriday",
+                                                "caption": "FR",
+                                                "value": true
+                                            },
+                                            {
+                                                "type": "CheckBox",
+                                                "name": "WizardSaturday",
+                                                "caption": "SA",
+                                                "value": true
+                                            },
+                                            {
+                                                "type": "CheckBox",
+                                                "name": "WizardSunday",
+                                                "caption": "SU",
+                                                "value": true
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Select",
+                                        "name": "WizardCalendar",
+                                        "caption": "Rule",
+                                        "value": 0,
+                                        "width": "400px",
+                                        "options": [
+                                            {
+                                                "caption": "Always",
+                                                "value": 0
+                                            },
+                                            {
+                                                "caption": "On holidays",
+                                                "value": 1
+                                            },
+                                            {
+                                                "caption": "On vacations",
+                                                "value": 2
+                                            },
+                                            {
+                                                "caption": "On holidays or vacations",
+                                                "value": 3
+                                            },
+                                            {
+                                                "caption": "Not on holidays",
+                                                "value": 4
+                                            },
+                                            {
+                                                "caption": "Not on vacations",
+                                                "value": 5
+                                            },
+                                            {
+                                                "caption": "Not on holidays or vacations",
+                                                "value": 6
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "RowLayout",
+                                        "items": [
+                                            {
+                                                "type": "ValidationTextBox",
+                                                "name": "WizardDateFrom",
+                                                "caption": "Valid from (MM-DD)",
+                                                "value": "",
+                                                "validate": "^$|^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+                                            },
+                                            {
+                                                "type": "ValidationTextBox",
+                                                "name": "WizardDateTo",
+                                                "caption": "Valid until (MM-DD)",
+                                                "value": "",
+                                                "validate": "^$|^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "Label",
+                                        "caption": "Leave the date range empty to switch all year. A range across the turn of the year is possible, e.g. 12-01 to 01-06.",
+                                        "italic": true
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "condition",
+                                "caption": "Condition",
+                                "items": [
+                                    {
+                                        "type": "Label",
+                                        "caption": "Optional: the schedule only switches if the following condition is fulfilled at switching time.",
+                                        "italic": true
+                                    },
+                                    {
+                                        "type": "SelectCondition",
+                                        "name": "WizardCondition",
+                                        "value": "[]",
+                                        "multi": true
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "action",
+                                "caption": "Action",
+                                "onConfirm": "IPS_RequestAction($id, 'WizardSummary', json_encode(['WizardName' => $WizardName, 'WizardTriggerType' => $WizardTriggerType, 'WizardTime' => $WizardTime, 'WizardSunEvent' => $WizardSunEvent, 'WizardOffset' => $WizardOffset, 'WizardSunEarliest' => $WizardSunEarliest, 'WizardSunLatest' => $WizardSunLatest, 'WizardSunSkip' => $WizardSunSkip, 'WizardVariable' => $WizardVariable, 'WizardVarEarliest' => $WizardVarEarliest, 'WizardVarLatest' => $WizardVarLatest, 'WizardRandom' => $WizardRandom, 'WizardMonday' => $WizardMonday, 'WizardTuesday' => $WizardTuesday, 'WizardWednesday' => $WizardWednesday, 'WizardThursday' => $WizardThursday, 'WizardFriday' => $WizardFriday, 'WizardSaturday' => $WizardSaturday, 'WizardSunday' => $WizardSunday, 'WizardCalendar' => $WizardCalendar, 'WizardDateFrom' => $WizardDateFrom, 'WizardDateTo' => $WizardDateTo, 'WizardCondition' => $WizardCondition, 'WizardAction' => $WizardAction, 'WizardActionCustom' => $WizardActionCustom]));",
+                                "onUndo": "// nothing to undo",
+                                "items": [
+                                    {
+                                        "type": "Label",
+                                        "caption": "'Switch on' and 'Switch off' use the devices and the script of the 'Devices' section.",
+                                        "italic": true
+                                    },
+                                    {
+                                        "type": "RadioButtonGroup",
+                                        "name": "WizardAction",
+                                        "value": 0,
+                                        "width": "100%",
+                                        "options": [
+                                            {
+                                                "caption": "Switch on",
+                                                "value": 0
+                                            },
+                                            {
+                                                "caption": "Switch off",
+                                                "value": 1
+                                            },
+                                            {
+                                                "caption": "Individual action",
+                                                "value": 2,
+                                                "items": [
+                                                    {
+                                                        "type": "SelectAction",
+                                                        "name": "WizardActionCustom",
+                                                        "value": "{\"actionID\":\"\",\"parameters\":{}}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "summary",
+                                "caption": "Summary",
+                                "onConfirm": [
+                                    "$rows = [];",
+                                    "foreach ($Timetable as $row) {",
+                                    "    $rows[] = $row;",
+                                    "}",
+                                    "IPS_RequestAction($id, 'WizardFinish', json_encode(['fields' => json_decode(json_encode(['WizardName' => $WizardName, 'WizardTriggerType' => $WizardTriggerType, 'WizardTime' => $WizardTime, 'WizardSunEvent' => $WizardSunEvent, 'WizardOffset' => $WizardOffset, 'WizardSunEarliest' => $WizardSunEarliest, 'WizardSunLatest' => $WizardSunLatest, 'WizardSunSkip' => $WizardSunSkip, 'WizardVariable' => $WizardVariable, 'WizardVarEarliest' => $WizardVarEarliest, 'WizardVarLatest' => $WizardVarLatest, 'WizardRandom' => $WizardRandom, 'WizardMonday' => $WizardMonday, 'WizardTuesday' => $WizardTuesday, 'WizardWednesday' => $WizardWednesday, 'WizardThursday' => $WizardThursday, 'WizardFriday' => $WizardFriday, 'WizardSaturday' => $WizardSaturday, 'WizardSunday' => $WizardSunday, 'WizardCalendar' => $WizardCalendar, 'WizardDateFrom' => $WizardDateFrom, 'WizardDateTo' => $WizardDateTo, 'WizardCondition' => $WizardCondition, 'WizardAction' => $WizardAction, 'WizardActionCustom' => $WizardActionCustom]), true), 'list' => $rows]));"
+                                ],
+                                "items": [
+                                    {
+                                        "type": "List",
+                                        "name": "WizardSummary",
+                                        "rowCount": 5,
+                                        "columns": [
+                                            {
+                                                "name": "caption",
+                                                "caption": "Setting",
+                                                "width": "200px"
+                                            },
+                                            {
+                                                "name": "value",
+                                                "caption": "Value",
+                                                "width": "auto"
+                                            }
+                                        ],
+                                        "values": []
+                                    },
+                                    {
+                                        "type": "Label",
+                                        "caption": "With OK the schedule is added to the list. Do not forget to apply the changes afterwards!",
+                                        "italic": true
                                     }
                                 ]
                             }
-                        },
-                        {
-                            "caption": "Condition(s)",
-                            "name": "conditions",
-                            "width": "auto",
-                            "add": false,
-                            "edit": {
-                                "type": "CheckBox"
-                            }
-                        },
-                        {
-                            "caption": "Condition",
-                            "name": "condition",
-                            "visible": false,
-                            "save": true,
-                            "width": "auto"
-                        }
-                    ]
-                },
-                {
-                    "type": "RowLayout",
-                    "items": [
-                        {
-                            "type": "Button",
-                            "name": "add",
-                            "caption": "Add",
-                            "width": "125px",
-                            "onClick": [
-                                "$list= [];",
-                                "foreach ($Timetable as $line) { $list[] = $line;};",
-                                "IPS_RequestAction($id,'OnAdd', json_encode($list));"
-                            ]
-                        },
-                        {
-                            "type": "Button",
-                            "name": "copy",
-                            "caption": "Duplicate",
-                            "width": "125px",
-                            "onClick": [
-                                "if (!isset($Timetable['id'])) { return; };",
-                                "$list= [];",
-                                "foreach ($Timetable as $line) { $list[] = $line;};",
-                                "$list[] = $Timetable['id'];",
-                                "IPS_RequestAction($id,'OnCopy', json_encode($list));"
-                            ]
-                        },
-                        {
-                            "type": "Button",
-                            "name": "sort",
-                            "caption": "Re-Sort",
-                            "width": "125px",
-                            "onClick": [
-                                "$list= [];",
-                                "foreach ($Timetable as $line) { $list[] = $line;};",
-                                "IPS_RequestAction($id,'OnSort', json_encode($list));"
-                            ]
-                        },
-                        {
-                            "type": "Button",
-                            "name": "update",
-                            "caption": "Update",
-                            "width": "125px",
-                            "onClick": [
-                                "if (!isset($Timetable['id'])) { return; };",
-                                "$list= [];",
-                                "foreach ($Timetable as $line) { $list[] = $line;};",
-                                "$list[] = ['id' => $Timetable['id'],'status' => $SelectedStatus, 'rule' => $SelectedRule, 'action' => $SelectedAction, 'time' => $SelectedTime, 'monday' => $SelectedMonday, 'tuesday' => $SelectedTuesday, 'wednesday' => $SelectedWednesday, 'thursday' => $SelectedThursday, 'friday' => $SelectedFriday, 'saturday' => $SelectedSaturday, 'sunday' => $SelectedSunday, 'earliest' => $SelectedEarliest, 'event' => $SelectedEvent, 'latest' => $SelectedLatest, 'condition'=> $SelectedCondition];",
-                                "IPS_RequestAction($id,'OnUpdate', json_encode($list));"
-                            ]
-                        }
-                    ]
+                        ]
+                    }
                 },
                 {
                     "type": "Label",
-                    "caption": " "
+                    "caption": "(1) New schedules can be created step by step with the assistant. 'Add' and editing open a dialog with the settings relevant for trigger and action.",
+                    "italic": true
                 },
                 {
                     "type": "Label",
-                    "caption": "--- Selected circuit ---",
-                    "bold": true
-                },
-                {
-                    "type": "RowLayout",
-                    "items": [
-                        {
-                            "type": "Label",
-                            "caption": "      "
-                        },
-                        {
-                            "type": "ValidationTextBox",
-                            "name": "SelectedNumber",
-                            "caption": "Number:",
-                            "enabled": false,
-                            "width": "75px"
-                        },
-                        {
-                            "type": "Select",
-                            "name": "SelectedStatus",
-                            "caption": "Status:",
-                            "width": "100px",
-                            "options": [
-                                {
-                                    "caption": "Aktiv",
-                                    "value": 1
-                                },
-                                {
-                                    "caption": "Inaktiv",
-                                    "value": 2
-                                }
-                            ]
-                        },
-                        {
-                            "type": "Select",
-                            "name": "SelectedRule",
-                            "caption": "Rule:",
-                            "width": "425px",
-                            "options": [
-                                {
-                                    "caption": "Always",
-                                    "value": 0
-                                },
-                                {
-                                    "caption": "On holidays",
-                                    "value": 1
-                                },
-                                {
-                                    "caption": "On vacations",
-                                    "value": 2
-                                },
-                                {
-                                    "caption": "On holidays or vacations",
-                                    "value": 3
-                                },
-                                {
-                                    "caption": "Not on holidays",
-                                    "value": 4
-                                },
-                                {
-                                    "caption": "Not on vacations",
-                                    "value": 5
-                                },
-                                {
-                                    "caption": "Not on holidays or vacations",
-                                    "value": 6
-                                }
-                            ]
-                        },
-                        {
-                            "type": "Select",
-                            "name": "SelectedAction",
-                            "caption": "Aktion",
-                            "width": "185px",
-                            "options": [
-                                {
-                                    "caption": "Switch on",
-                                    "value": true
-                                },
-                                {
-                                    "caption": "Switch off",
-                                    "value": false
-                                }
-                            ]
-                        }
-                    ]
+                    "caption": "(2) If several schedules are due at the same time, the lowest entry in the list wins.",
+                    "italic": true
                 },
                 {
                     "type": "Label",
-                    "caption": "--- Weekdays ---",
-                    "bold": true
-                },
-                {
-                    "type": "RowLayout",
-                    "items": [
-                        {
-                            "type": "Label",
-                            "caption": "      "
-                        },
-                        {
-                            "type": "CheckBox",
-                            "name": "SelectedMonday",
-                            "caption": "Monday",
-                            "width": "115px"
-                        },
-                        {
-                            "type": "CheckBox",
-                            "name": "SelectedTuesday",
-                            "caption": "Tuesday",
-                            "width": "115px"
-                        },
-                        {
-                            "type": "CheckBox",
-                            "name": "SelectedWednesday",
-                            "caption": "Wednesday",
-                            "width": "115px"
-                        },
-                        {
-                            "type": "CheckBox",
-                            "name": "SelectedThursday",
-                            "caption": "Thursday",
-                            "width": "120px"
-                        },
-                        {
-                            "type": "CheckBox",
-                            "name": "SelectedFriday",
-                            "caption": "Friday",
-                            "width": "115px"
-                        },
-                        {
-                            "type": "CheckBox",
-                            "name": "SelectedSaturday",
-                            "caption": "Saturday",
-                            "width": "115px"
-                        },
-                        {
-                            "type": "CheckBox",
-                            "name": "SelectedSunday",
-                            "caption": "Sunday",
-                            "width": "115px"
-                        }
-                    ]
-                },
+                    "caption": "(3) Holiday and vacation rules require the corresponding variables in the 'Calendar' section.",
+                    "italic": true
+                }
+            ]
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "📅 Calendar ...",
+            "items": [
                 {
                     "type": "Label",
-                    "caption": "--- Timing ---",
-                    "bold": true
+                    "caption": "... the following variables (type Boolean) provide the information for the current day, e.g. from the Almanac module:"
                 },
                 {
-                    "type": "RowLayout",
-                    "items": [
-                        {
-                            "type": "Label",
-                            "caption": "      "
-                        },
-                        {
-                            "type": "SelectTime",
-                            "name": "SelectedTime",
-                            "caption": "Time:",
-                            "width": "100px"
-                        },
-                        {
-                            "type": "Button",
-                            "caption": "⭙",
-                            "width": "75px",
-                            "onClick": "IPS_RequestAction($id,'OnReset', 'SelectedTime');"
-                        },
-                        {
-                            "type": "Label",
-                            "caption": "Overwritten when a trigger or\nevent is selected!",
-                            "italic": true
-                        }
-                    ]
+                    "type": "SelectVariable",
+                    "name": "CalendarHoliday",
+                    "caption": "Holiday today:",
+                    "validVariableTypes": [
+                        0
+                    ],
+                    "width": "450px"
                 },
                 {
-                    "type": "Label",
-                    "caption": "--- Trigger / Event ---",
-                    "bold": true
+                    "type": "SelectVariable",
+                    "name": "CalendarVacation",
+                    "caption": "Vacation today:",
+                    "validVariableTypes": [
+                        0
+                    ],
+                    "width": "450px"
                 },
                 {
-                    "type": "RowLayout",
-                    "items": [
-                        {
-                            "type": "Label",
-                            "caption": "      "
-                        },
-                        {
-                            "type": "SelectTime",
-                            "name": "SelectedEarliest",
-                            "caption": "Earliest:",
-                            "width": "100px"
-                        },
-                        {
-                            "type": "Button",
-                            "caption": "⭙",
-                            "width": "75px",
-                            "onClick": "IPS_RequestAction($id,'OnReset', 'SelectedEarliest');"
-                        },
-                        {
-                            "type": "Select",
-                            "name": "SelectedEvent",
-                            "caption": "Ereignis:",
-                            "width": "425px",
-                            "onChange": "IPS_RequestAction($id,'OnEvent', $SelectedEvent);",
-                            "options": [
-                                {
-                                    "label": "Off",
-                                    "value": "Off"
-                                },
-                                {
-                                    "label": "------------------------------",
-                                    "value": "None"
-                                },
-                                {
-                                    "label": "Astronomic twilight start",
-                                    "value": "AstronomicTwilightStart"
-                                },
-                                {
-                                    "label": "Nautic twilight start",
-                                    "value": "NauticTwilightStart"
-                                },
-                                {
-                                    "label": "Civil twilight start",
-                                    "value": "CivilTwilightStart"
-                                },
-                                {
-                                    "label": "Sunrise",
-                                    "value": "Sunrise"
-                                },
-                                {
-                                    "label": "------------------------------",
-                                    "value": "None"
-                                },
-                                {
-                                    "label": "Sunset",
-                                    "value": "Sunset"
-                                },
-                                {
-                                    "label": "Civil twilight end",
-                                    "value": "CivilTwilightEnd"
-                                },
-                                {
-                                    "label": "Nautic twilight end",
-                                    "value": "NauticTwilightEnd"
-                                },
-                                {
-                                    "label": "Astronomic twilight end",
-                                    "value": "AstronomicTwilightEnd"
-                                },
-                                {
-                                    "label": "------------------------------",
-                                    "value": "None"
-                                },
-                                {
-                                    "label": "External Trigger",
-                                    "value": "ExternalTrigger"
-                                }
-                            ]
-                        },
-                        {
-                            "type": "SelectTime",
-                            "name": "SelectedLatest",
-                            "caption": "Latest:",
-                            "width": "100px"
-                        },
-                        {
-                            "type": "Button",
-                            "caption": "⭙",
-                            "width": "75px",
-                            "onClick": "IPS_RequestAction($id,'OnReset', 'SelectedLatest');"
-                        }
-                    ]
-                },
-                {
-                    "type": "Label",
-                    "caption": "--- Condition ---",
-                    "bold": true
-                },
-                {
-                    "type": "RowLayout",
-                    "items": [
-                        {
-                            "type": "Label",
-                            "caption": "      "
-                        },
-                        {
-                            "type": "SelectCondition",
-                            "name": "SelectedCondition",
-                            "multi": true
-                        }
-                    ]
+                    "type": "SelectVariable",
+                    "name": "CalendarLock",
+                    "caption": "Lock (no switching while active):",
+                    "validVariableTypes": [
+                        0
+                    ],
+                    "width": "450px"
                 }
             ]
         },
@@ -654,14 +789,11 @@
                             "width": "auto",
                             "add": 0,
                             "edit": {
-                                "type": "SelectVariable"
+                                "type": "SelectVariable",
+                                "validVariableTypes": [
+                                    0
+                                ]
                             }
-                        },
-                        {
-                            "name": "Status",
-                            "caption": "Status",
-                            "width": "150px",
-                            "add": "New"
                         }
                     ]
                 },
@@ -670,6 +802,11 @@
                     "name": "DeviceScript",
                     "caption": "Simultaneous execution of a script:",
                     "width": "450px"
+                },
+                {
+                    "type": "Label",
+                    "caption": "\nVariables and script are used by the actions 'Switch on' and 'Switch off'. The script receives the state as 'State'.",
+                    "italic": true
                 }
             ]
         },
@@ -678,22 +815,137 @@
             "caption": "⚙️ Advanced Settings ...",
             "items": [
                 {
-                    "type": "SelectVariable",
-                    "name": "SettingsTrigger",
-                    "caption": "External Trigger:",
-                    "validVariableTypes": [
-                        0
-                    ]
+                    "type": "CheckBox",
+                    "name": "SettingsSwitch",
+                    "caption": "Create status variable for manual switching of the devices (e.g. for the visualization)?"
                 },
                 {
                     "type": "CheckBox",
-                    "name": "SettingsSwitch",
-                    "caption": "Additionally create a normal switch variable (e.g. for WebFront)?"
+                    "name": "SettingsCatchUp",
+                    "caption": "Restore the target state after a restart or applying the configuration (only if it differs)?"
+                },
+                {
+                    "type": "RadioButtonGroup",
+                    "name": "SettingsOverrideMode",
+                    "caption": "After manual switching:",
+                    "width": "600px",
+                    "options": [
+                        {
+                            "caption": "Continue the automatic unchanged",
+                            "value": 0
+                        },
+                        {
+                            "caption": "Pause trigger variables and catch up until the next switching point",
+                            "value": 1
+                        },
+                        {
+                            "caption": "Additionally skip the next switching point",
+                            "value": 2
+                        }
+                    ]
+                },
+                {
+                    "type": "Label",
+                    "caption": "Manual switching means switching via the status variable 'Switch' or directly at a device.",
+                    "italic": true
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "SettingsDirect",
+                    "caption": "Set switch variables without action directly (only variables not belonging to an instance)?"
                 }
             ]
         }
     ],
     "actions": [
+        {
+            "name": "EchoPopup",
+            "type": "PopupAlert",
+            "visible": false,
+            "popup": {
+                "items": [
+                    {
+                        "type": "Label",
+                        "name": "EchoMessage",
+                        "caption": ""
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PreviewPopup",
+            "type": "PopupAlert",
+            "visible": false,
+            "popup": {
+                "caption": "Preview next 7 days",
+                "items": [
+                    {
+                        "type": "List",
+                        "name": "PreviewList",
+                        "rowCount": 15,
+                        "columns": [
+                            {
+                                "name": "date",
+                                "caption": "Date",
+                                "width": "100px"
+                            },
+                            {
+                                "name": "time",
+                                "caption": "Time",
+                                "width": "110px"
+                            },
+                            {
+                                "name": "name",
+                                "caption": "Name",
+                                "width": "200px"
+                            },
+                            {
+                                "name": "action",
+                                "caption": "Action",
+                                "width": "160px"
+                            },
+                            {
+                                "name": "note",
+                                "caption": "Note",
+                                "width": "auto"
+                            }
+                        ],
+                        "values": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "ExpansionPanel",
+            "caption": "🧪 Test ...",
+            "items": [
+                {
+                    "type": "RowLayout",
+                    "items": [
+                        {
+                            "type": "Button",
+                            "caption": "Switch on now",
+                            "onClick": "IPS_RequestAction($id, 'TestSwitch', true);"
+                        },
+                        {
+                            "type": "Button",
+                            "caption": "Switch off now",
+                            "onClick": "IPS_RequestAction($id, 'TestSwitch', false);"
+                        },
+                        {
+                            "type": "Button",
+                            "caption": "Preview next 7 days",
+                            "onClick": "IPS_RequestAction($id, 'Preview', 0);"
+                        }
+                    ]
+                },
+                {
+                    "type": "Label",
+                    "caption": "Switches the devices and executes the script, regardless of schedules and conditions.",
+                    "italic": true
+                }
+            ]
+        },
         {
             "type": "ExpansionPanel",
             "caption": "🎗️ Source code, donation and licence ...",
@@ -725,6 +977,7 @@
                 },
                 {
                     "type": "Label",
+                    "name": "Version",
                     "color": 8421504
                 }
             ]
@@ -749,17 +1002,27 @@
         {
             "code": 201,
             "icon": "inactive",
-            "caption": "Please select a trigger for switching on!"
+            "caption": "No active schedule available!"
         },
         {
             "code": 202,
-            "icon": "inactive",
-            "caption": "Please select a trigger for switching off!"
+            "icon": "error",
+            "caption": "No target defined (devices, script or individual action)!"
         },
         {
             "code": 203,
+            "icon": "error",
+            "caption": "Location Control or location offset not found!"
+        },
+        {
+            "code": 204,
             "icon": "inactive",
-            "caption": "Please select a differing switch-on and switch-off time!"
+            "caption": "Conflicting schedules at the same time!"
+        },
+        {
+            "code": 205,
+            "icon": "error",
+            "caption": "Switch variable or script missing or not switchable!"
         }
     ]
 }
